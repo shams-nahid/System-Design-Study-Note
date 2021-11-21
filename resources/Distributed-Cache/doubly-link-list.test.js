@@ -96,5 +96,52 @@ describe('Doubly Link List', () => {
             });
         });
 
+        describe('remove item', () => {
+            it('should be defined', () => {
+                expect(typeof linkedList.remove).toBe('function');
+            });
+
+            it('should return if the linked list is empty', () => {
+                expect(() => linkedList.remove(new Node('Some Data'))).not.toThrow()
+            });
+
+            it('should able to remove head', () => {
+                const newNode = new Node('some data');
+                linkedList.insert(newNode);
+                linkedList.remove(newNode);
+                expect(linkedList.head).toEqual(null);
+                expect(linkedList.tail).toEqual(null);
+            });
+
+            it('should able to remove tail', () => {
+                const tailNode = new Node('some tail data');
+                const headNode = new Node('some head data');
+                linkedList.insert(tailNode);
+                linkedList.insert(headNode);
+                linkedList.remove(tailNode);
+                expect(linkedList.head).toEqual(headNode);
+                expect(linkedList.tail).toEqual(headNode);
+            });
+
+            it('should able to remove middle node', () => {
+                const tailNode = new Node('some tail data');
+                const middleNode = new Node('some middle data');
+                const headNode = new Node('some head data');
+
+                linkedList.insert(tailNode);
+                linkedList.insert(middleNode);
+                linkedList.insert(headNode);
+
+                expect(linkedList.get(middleNode).data).toEqual('some middle data');
+
+                linkedList.remove(middleNode);
+
+                expect(linkedList.head).toEqual(headNode);
+                expect(linkedList.tail).toEqual(tailNode);
+
+                expect(linkedList.get(middleNode)).toEqual(null);
+            });
+        });
+
     });
 });

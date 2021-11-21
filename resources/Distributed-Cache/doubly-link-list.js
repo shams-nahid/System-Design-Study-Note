@@ -49,6 +49,46 @@ class LinkedList {
         this.head = node;
     }
 
+    remove(node) {
+        // when the list is empty
+        if (!this.head) {
+            return;
+        }
+        // when the list has only head, removing head node
+        if (node === this.head && !this.head.next) {
+            this.head = null;
+            this.tail = null;
+            return;
+        }
+        // removing the tail node
+        if (node === this.tail) {
+            this.tail = this.tail.prev;
+            this.tail.next = null;
+            return;
+        }
+
+        // removing the middle node
+        const previousNode = node.prev;
+        const nextNode = node.next;
+        previousNode.next = nextNode;
+        nextNode.prev = previousNode;
+    }
+
+    removeLast() {
+        this.remove(this.tail);
+    }
+
+    get(node) {
+        let currentNode = this.head;
+        while (currentNode) {
+            if (currentNode === node) {
+                return node;
+            }
+            currentNode = currentNode.next;
+        }
+        return null;
+    }
+
 }
 
 class Node {
