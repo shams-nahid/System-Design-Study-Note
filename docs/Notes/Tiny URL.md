@@ -7,6 +7,8 @@
 - Make URL short
 - Short link should redirect to original link
 - Should able be specify the expiration time
+- [Optional] Analytivs for how many redirection happened
+- [Optional] Expose services using REST API
 
 ## Non-Functional Requirements
 
@@ -35,7 +37,7 @@
 ### Bandwidth Estimate
 
 - For write requests, we have already calculated, 200 new URL per seconds. Since we are assuming each URL is 500 bytes, total incoming bandwidth will be (200 \* 500 bytes) = 100kB/second.
-- For write requests, we have already calculated, 20k URL per seconds. Since we are assuming each URL is 500 bytes, total incoming bandwidth will be (20,000 \* 500 bytes) = 10MB/second.
+- For read requests, we have already calculated, 20k URL per seconds. Since we are assuming each URL is 500 bytes, total outgoing bandwidth will be (20,000 \* 500 bytes) = 10MB/second.
 
 ### Memory Estimate (Per Day)
 
@@ -47,6 +49,9 @@
 
 - Create URL
 - Delete URL
+
+> To prevent the number of request to an endpoint, we will introduce a dev key, should be passed through the api call. These dev key should have a specific limits.
+
 
 ### Create URL
 
@@ -61,3 +66,23 @@ As results, return a short URL.
 ### Delete URL
 
 Should get a db url, and remove it from db
+
+## Database Design
+
+We will need two tables/collections,
+
+**URL**
+
+- hash (unique identifier, the short url)
+- original URL
+- creation date
+- expiry date
+- user id
+
+**User**
+
+- user id (unique indetifier)
+- email
+- creation date
+
+As we are about to store billions of rows and we do not have to maintain the strong relations betwee collections/table, we can simply use NoSQL database for easy scale.
