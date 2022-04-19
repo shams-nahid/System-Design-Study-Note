@@ -86,3 +86,12 @@ We will need two tables/collections,
 - creation date
 
 As we are about to store billions of rows and we do not have to maintain the strong relations betwee collections/table, we can simply use NoSQL database for easy scale.
+
+
+
+### Summary
+
+- What are the size of the shortend url?
+- Volume of traffic?
+- Is the system single instance or will be scaleable?
+-  
