@@ -87,6 +87,59 @@ We will need two tables/collections,
 
 As we are about to store billions of rows and we do not have to maintain the strong relations betwee collections/table, we can simply use NoSQL database for easy scale.
 
+## System Design
+
+### Encoding URL
+
+From the long url, we can compute the unique short URL using the hash function, MD5 or Sha256. Then the hash can be encoded for display. For encoding, we can use base36, base62 or base64.
+
+If we consider 6 character short URL, the possible combination will be 64^6 = ~ 68 billion.
+
+With MD5 hashing function, we will get 128 bit hash value. Since 1 hex digit is 4 bits, we will get total of 32 hex digits as output from MD5 hashing. We are only allowed to take only 6 characters and if we take the first 6 characters, it might give us duplicate short url.
+
+With this mechanism, we have two problem,
+
+1. Multiple users with same url will get same shortend url
+2. Encoded URL are identical [TODO]
+
+To resolve this, we can either add a sequence number or counter to the original URL and do the hashing untill we get a unique shortend URL.
+
+> base36 includes a-z and 0-9
+> base62 includes a-z, A-Z and 0-9
+> base64 includes a-z, A-Z, 0-9, + and /
+
+
+### Offline Key Generation Service
+
+We will generate random 6 digits url beforehand. When a url needs to be shortend, just take on from the already generated urls.
+
+Any time a key is being used, we have to mark it as used. If multiple server tries to read a key same time, it will make same short url for multiple urls.
+
+We can use two collections in the key service, used and new. Will use a memory, where the key service first load some keys for use. In the same time, we will send them from new collection to used collection.
+
+Servers will get the keys from the memory.
+
+**DB Size**
+
+When we do need a 68B url, with each 6 charactars long, each character with 1 bit, we will need (68B * 6 bit) = ~415 GB storage
+
+**Availability**
+
+Have to make sure there is an standby rserver for the service.
+
+**Performance Improvement**
+
+The application server can cache couple of keys beforehand. In case the app server crash, we might loose couple of unique keys.
+
+## Data partitioning and Replication
+
+We can partition database by,
+
+1. Range Based Partitioning: Can partition the database by the start character. In this case, if a certain characted appears in the most url, the one partition may have more traffic than others.
+2. Hash Based Partitoning (Consistant Hashing): We can do the hashing to the shortend url and this hash will determine the range. 
+
+## Cache
+
 
 
 ### Summary
